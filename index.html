@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Composer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <span class="app-title">✦ Composer</span>
+    <nav class="tabs">
+      <button class="tab active" data-tab="neck">Neck</button>
+      <button class="tab" data-tab="chords">Chords</button>
+      <button class="tab" data-tab="lyrics">Lyrics</button>
+      <button class="tab" data-tab="structure">Structure</button>
+    </nav>
+    <button class="icon-btn" id="settings-btn" title="Settings">⚙</button>
+  </header>
+
+  <!-- ── Settings modal ── -->
+  <div class="modal-overlay hidden" id="settings-modal">
+    <div class="modal">
+      <h3>Settings</h3>
+      <label>Anthropic API Key
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+      </label>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="settings-cancel">Cancel</button>
+        <button class="btn btn-primary" id="settings-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- ── Neck tab ── -->
+    <section id="tab-neck" class="tab-panel active">
+      <div class="neck-controls">
+        <div class="control-group">
+          <label>Tuning</label>
+          <select id="tuning-preset">
+            <option value="standard">Standard — E A D G B E</option>
+            <option value="drop-d">Drop D — D A D G B E</option>
+            <option value="drop-c">Drop C — C G C F A D</option>
+            <option value="drop-b" selected>Drop B — B F# B E G# C#</option>
+            <option value="open-g">Open G — D G D G B D</option>
+            <option value="open-d">Open D — D A D F# A D</option>
+            <option value="dadgad">DADGAD — D A D G A D</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </div>
+        <div class="control-group" id="custom-tuning-group" style="display:none">
+          <label>Custom (low → high)</label>
+          <div class="string-inputs">
+            <input class="string-note" placeholder="B" maxlength="2" />
+            <input class="string-note" placeholder="F#" maxlength="2" />
+            <input class="string-note" placeholder="B" maxlength="2" />
+            <input class="string-note" placeholder="E" maxlength="2" />
+            <input class="string-note" placeholder="G#" maxlength="2" />
+            <input class="string-note" placeholder="C#" maxlength="2" />
+          </div>
+        </div>
+        <div class="control-group">
+          <label>Root</label>
+          <select id="root-note">
+            <option>C</option><option>C#</option><option>D</option>
+            <option>D#</option><option>E</option><option>F</option>
+            <option>F#</option><option>G</option><option>G#</option>
+            <option>A</option><option>A#</option><option value="B" selected>B</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Scale / Mode</label>
+          <select id="scale-select">
+            <option value="none">— none —</option>
+            <option value="major">Major</option>
+            <option value="minor" selected>Natural Minor</option>
+            <option value="pent-major">Pentatonic Major</option>
+            <option value="pent-minor">Pentatonic Minor</option>
+            <option value="blues">Blues</option>
+            <option value="dorian">Dorian</option>
+            <option value="phrygian">Phrygian</option>
+            <option value="lydian">Lydian</option>
+            <option value="mixolydian">Mixolydian</option>
+            <option value="harmonic-minor">Harmonic Minor</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Frets</label>
+          <select id="fret-count">
+            <option value="12">12</option>
+            <option value="15">15</option>
+            <option value="22" selected>22</option>
+            <option value="24">24</option>
+          </select>
+        </div>
+      </div>
+      <div id="fretboard-wrap">
+        <div id="fretboard"></div>
+      </div>
+      <div class="neck-legend">
+        <span class="dot root-dot"></span> Root &nbsp;
+        <span class="dot scale-dot"></span> Scale note &nbsp;
+        <span class="dot muted-dot"></span> Out of scale
+      </div>
+    </section>
+
+    <!-- ── Chords tab ── -->
+    <section id="tab-chords" class="tab-panel">
+      <div class="chords-controls">
+        <div class="control-group">
+          <label>Key</label>
+          <select id="chord-root">
+            <option>C</option><option>C#</option><option>D</option>
+            <option>D#</option><option>E</option><option>F</option>
+            <option>F#</option><option>G</option><option>G#</option>
+            <option>A</option><option>A#</option><option value="B" selected>B</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Scale</label>
+          <select id="chord-scale">
+            <option value="major">Major</option>
+            <option value="minor" selected>Minor</option>
+            <option value="dorian">Dorian</option>
+            <option value="phrygian">Phrygian</option>
+            <option value="mixolydian">Mixolydian</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="diatonic-grid" id="diatonic-grid"></div>
+
+      <div class="progression-section">
+        <div class="section-header">
+          <h3>Progression</h3>
+          <button class="btn btn-ghost" id="clear-progression">Clear</button>
+          <button class="btn btn-secondary" id="copy-progression">Copy</button>
+        </div>
+        <div class="progression-row" id="progression-row">
+          <span class="progression-empty">Click chords above to build a progression</span>
+        </div>
+      </div>
+
+      <div class="common-progressions">
+        <h3>Common progressions in this key</h3>
+        <div id="common-list"></div>
+      </div>
+    </section>
+
+    <!-- ── Lyrics tab ── -->
+    <section id="tab-lyrics" class="tab-panel">
+      <div class="lyrics-layout">
+        <div class="lyrics-main">
+          <div class="song-header">
+            <input class="song-title-input" id="song-title" placeholder="Song title…" />
+          </div>
+          <div class="sections-list" id="sections-list"></div>
+          <button class="btn btn-ghost add-section-btn" id="add-section-btn">+ Add section</button>
+        </div>
+        <div class="claude-panel" id="claude-panel">
+          <div class="claude-panel-header">
+            <span>✦ Claude</span>
+            <button class="icon-btn" id="claude-toggle">×</button>
+          </div>
+          <div class="claude-messages" id="claude-messages">
+            <div class="claude-hint">Select a section and ask Claude for help.</div>
+          </div>
+          <div class="claude-quick-prompts">
+            <button class="quick-prompt" data-prompt="Suggest a next line that continues this">Next line</button>
+            <button class="quick-prompt" data-prompt="Find 5 rhymes for the last word in this section">Rhymes</button>
+            <button class="quick-prompt" data-prompt="Rewrite this as darker and more intense">Darker</button>
+            <button class="quick-prompt" data-prompt="Rewrite this as more hopeful and uplifting">Hopeful</button>
+            <button class="quick-prompt" data-prompt="Summarise what this verse is about in one sentence">Summarise</button>
+          </div>
+          <div class="claude-input-row">
+            <textarea class="claude-input" id="claude-input" placeholder="Ask Claude…" rows="2"></textarea>
+            <button class="btn btn-primary" id="claude-send">↑</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-ghost show-claude-btn" id="show-claude-btn">✦ Ask Claude</button>
+    </section>
+
+    <!-- ── Structure tab ── -->
+    <section id="tab-structure" class="tab-panel">
+      <div class="structure-header">
+        <h3 id="structure-song-title">Song Structure</h3>
+        <button class="btn btn-ghost" id="structure-add-btn">+ Add section</button>
+      </div>
+      <div class="structure-timeline" id="structure-timeline"></div>
+      <p class="structure-hint">Drag sections to reorder. Changes sync back to the Lyrics tab.</p>
+    </section>
+
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/fretboard.js"></script>
+  <script src="js/chords.js"></script>
+  <script src="js/lyrics.js"></script>
+  <script src="js/structure.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
