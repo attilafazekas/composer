@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
       panels.forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-      if (tab.dataset.tab === 'structure') Structure.render();
     });
   });
 
@@ -37,6 +36,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Init modules ──
   Fretboard.init();
   Chords.init();
-  Lyrics.init();
-  Structure.init();
+  ChordsTab.init();
 });

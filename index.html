@@ -12,9 +12,8 @@
     <span class="app-title">✦ Composer</span>
     <nav class="tabs">
       <button class="tab active" data-tab="neck">Neck</button>
-      <button class="tab" data-tab="chords">Chords</button>
-      <button class="tab" data-tab="lyrics">Lyrics</button>
-      <button class="tab" data-tab="structure">Structure</button>
+      <button class="tab" data-tab="chord-finder">Chords</button>
+      <button class="tab" data-tab="chords">Chord Progression</button>
     </nav>
     <button class="icon-btn" id="settings-btn" title="Settings">⚙</button>
   </header>
@@ -41,13 +40,39 @@
         <div class="control-group">
           <label>Tuning</label>
           <select id="tuning-preset">
-            <option value="standard">Standard — E A D G B E</option>
-            <option value="drop-d">Drop D — D A D G B E</option>
-            <option value="drop-c">Drop C — C G C F A D</option>
-            <option value="drop-b" selected>Drop B — B F# B E G# C#</option>
-            <option value="open-g">Open G — D G D G B D</option>
-            <option value="open-d">Open D — D A D F# A D</option>
-            <option value="dadgad">DADGAD — D A D G A D</option>
+            <optgroup label="6-String Standard">
+              <option value="standard">Standard — E A D G B E</option>
+              <option value="eb-standard">Eb Standard — Eb Ab Db Gb Bb Eb</option>
+              <option value="d-standard">D Standard — D G C F A D</option>
+              <option value="cs-standard">C# Standard — C# F# B E G# C#</option>
+              <option value="c-standard">C Standard — C F Bb Eb G C</option>
+              <option value="b-standard">B Standard — B E A D F# B</option>
+            </optgroup>
+            <optgroup label="6-String Drop">
+              <option value="drop-d">Drop D — D A D G B E</option>
+              <option value="drop-cs">Drop C# — C# G# C# F# Bb Eb</option>
+              <option value="drop-c">Drop C — C G C F A D</option>
+              <option value="drop-b" selected>Drop B — B F# B E G# C#</option>
+              <option value="drop-as">Drop Bb — Bb F Bb Eb G C</option>
+              <option value="drop-a">Drop A — A E A D F# B</option>
+            </optgroup>
+            <optgroup label="Open / Alternate">
+              <option value="open-g">Open G — D G D G B D</option>
+              <option value="open-d">Open D — D A D F# A D</option>
+              <option value="dadgad">DADGAD — D A D G A D</option>
+            </optgroup>
+            <optgroup label="7-String">
+              <option value="7-standard">7 Standard — B E A D G B E</option>
+              <option value="7-drop-a">7 Drop A — A E A D G B E</option>
+              <option value="7-bb">7 Bb Standard — Bb Eb Ab Db Gb Bb Eb</option>
+              <option value="7-drop-gs">7 Drop Ab — Ab Eb Ab Db Gb Bb Eb</option>
+              <option value="7-a-std">7 A Standard — A D G C F A D</option>
+              <option value="7-drop-g">7 Drop G — G D G C F A D</option>
+              <option value="7-gs-std">7 Ab Standard — Ab Db Gb B E Ab Db</option>
+              <option value="7-drop-fs">7 Drop F# — F# Db F# B E Ab Db</option>
+              <option value="7-fs-std">7 F# Standard — F# B E A D F# B</option>
+              <option value="7-drop-e">7 Drop E — E B E A D F# B</option>
+            </optgroup>
             <option value="custom">Custom…</option>
           </select>
         </div>
@@ -87,23 +112,93 @@
             <option value="harmonic-minor">Harmonic Minor</option>
           </select>
         </div>
-        <div class="control-group">
-          <label>Frets</label>
-          <select id="fret-count">
-            <option value="12">12</option>
-            <option value="15">15</option>
-            <option value="22" selected>22</option>
-            <option value="24">24</option>
-          </select>
-        </div>
       </div>
       <div id="fretboard-wrap">
         <div id="fretboard"></div>
       </div>
+      <div id="chord-indicator" class="hidden"></div>
       <div class="neck-legend">
         <span class="dot root-dot"></span> Root &nbsp;
         <span class="dot scale-dot"></span> Scale note &nbsp;
         <span class="dot muted-dot"></span> Out of scale
+      </div>
+      <div id="neck-chord-strip"></div>
+    </section>
+
+    <!-- ── Chord finder tab ── -->
+    <section id="tab-chord-finder" class="tab-panel">
+      <div class="cf-controls">
+        <div class="control-group">
+          <label>Root</label>
+          <select id="cf-root">
+            <option>C</option><option>C#</option><option>D</option>
+            <option>D#</option><option>E</option><option>F</option>
+            <option>F#</option><option>G</option><option>G#</option>
+            <option>A</option><option>A#</option><option value="B" selected>B</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Chord Type</label>
+          <select id="cf-chord-type">
+            <option value="maj">maj</option>
+            <option value="min">min</option>
+            <option value="5">5</option>
+            <option value="sus2">sus2</option>
+            <option value="sus4">sus4</option>
+            <option value="7">7</option>
+            <option value="maj7">maj7</option>
+            <option value="m7">m7</option>
+            <option value="dim">dim</option>
+            <option value="aug">aug</option>
+            <option value="m7b5">m7b5</option>
+            <option value="add9">add9</option>
+            <option value="9">9</option>
+            <option value="maj9">maj9</option>
+            <option value="m9">m9</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Tuning</label>
+          <select id="cf-tuning">
+            <optgroup label="6-String Standard">
+              <option value="standard">Standard — E A D G B E</option>
+              <option value="eb-standard">Eb Standard — Eb Ab Db Gb Bb Eb</option>
+              <option value="d-standard">D Standard — D G C F A D</option>
+              <option value="cs-standard">C# Standard — C# F# B E G# C#</option>
+              <option value="c-standard">C Standard — C F Bb Eb G C</option>
+              <option value="b-standard">B Standard — B E A D F# B</option>
+            </optgroup>
+            <optgroup label="6-String Drop">
+              <option value="drop-d">Drop D — D A D G B E</option>
+              <option value="drop-cs">Drop C# — C# G# C# F# Bb Eb</option>
+              <option value="drop-c">Drop C — C G C F A D</option>
+              <option value="drop-b" selected>Drop B — B F# B E G# C#</option>
+              <option value="drop-as">Drop Bb — Bb F Bb Eb G C</option>
+              <option value="drop-a">Drop A — A E A D F# B</option>
+            </optgroup>
+            <optgroup label="Open / Alternate">
+              <option value="open-g">Open G — D G D G B D</option>
+              <option value="open-d">Open D — D A D F# A D</option>
+              <option value="dadgad">DADGAD — D A D G A D</option>
+            </optgroup>
+            <optgroup label="7-String">
+              <option value="7-standard">7 Standard — B E A D G B E</option>
+              <option value="7-drop-a">7 Drop A — A E A D G B E</option>
+              <option value="7-bb">7 Bb Standard — Bb Eb Ab Db Gb Bb Eb</option>
+              <option value="7-drop-gs">7 Drop Ab — Ab Eb Ab Db Gb Bb Eb</option>
+              <option value="7-a-std">7 A Standard — A D G C F A D</option>
+              <option value="7-drop-g">7 Drop G — G D G C F A D</option>
+              <option value="7-gs-std">7 Ab Standard — Ab Db Gb B E Ab Db</option>
+              <option value="7-drop-fs">7 Drop F# — F# Db F# B E Ab Db</option>
+              <option value="7-fs-std">7 F# Standard — F# B E A D F# B</option>
+              <option value="7-drop-e">7 Drop E — E B E A D F# B</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="cf-cards" id="cf-cards"></div>
+      <div id="cf-neck-wrap">
+        <div id="cf-neck"></div>
       </div>
     </section>
 
@@ -150,57 +245,12 @@
       </div>
     </section>
 
-    <!-- ── Lyrics tab ── -->
-    <section id="tab-lyrics" class="tab-panel">
-      <div class="lyrics-layout">
-        <div class="lyrics-main">
-          <div class="song-header">
-            <input class="song-title-input" id="song-title" placeholder="Song title…" />
-          </div>
-          <div class="sections-list" id="sections-list"></div>
-          <button class="btn btn-ghost add-section-btn" id="add-section-btn">+ Add section</button>
-        </div>
-        <div class="claude-panel" id="claude-panel">
-          <div class="claude-panel-header">
-            <span>✦ Claude</span>
-            <button class="icon-btn" id="claude-toggle">×</button>
-          </div>
-          <div class="claude-messages" id="claude-messages">
-            <div class="claude-hint">Select a section and ask Claude for help.</div>
-          </div>
-          <div class="claude-quick-prompts">
-            <button class="quick-prompt" data-prompt="Suggest a next line that continues this">Next line</button>
-            <button class="quick-prompt" data-prompt="Find 5 rhymes for the last word in this section">Rhymes</button>
-            <button class="quick-prompt" data-prompt="Rewrite this as darker and more intense">Darker</button>
-            <button class="quick-prompt" data-prompt="Rewrite this as more hopeful and uplifting">Hopeful</button>
-            <button class="quick-prompt" data-prompt="Summarise what this verse is about in one sentence">Summarise</button>
-          </div>
-          <div class="claude-input-row">
-            <textarea class="claude-input" id="claude-input" placeholder="Ask Claude…" rows="2"></textarea>
-            <button class="btn btn-primary" id="claude-send">↑</button>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-ghost show-claude-btn" id="show-claude-btn">✦ Ask Claude</button>
-    </section>
-
-    <!-- ── Structure tab ── -->
-    <section id="tab-structure" class="tab-panel">
-      <div class="structure-header">
-        <h3 id="structure-song-title">Song Structure</h3>
-        <button class="btn btn-ghost" id="structure-add-btn">+ Add section</button>
-      </div>
-      <div class="structure-timeline" id="structure-timeline"></div>
-      <p class="structure-hint">Drag sections to reorder. Changes sync back to the Lyrics tab.</p>
-    </section>
-
   </main>
 
   <script src="js/storage.js"></script>
   <script src="js/fretboard.js"></script>
   <script src="js/chords.js"></script>
-  <script src="js/lyrics.js"></script>
-  <script src="js/structure.js"></script>
+  <script src="js/chord-finder.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -107,18 +107,16 @@ select { padding-right: 28px; appearance: none;
 
 /* ── Fretboard ── */
 #fretboard-wrap {
-  overflow-x: auto;
-  padding-bottom: 12px;
+  width: 100%;
 }
 
 #fretboard {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
-  gap: 0;
+  width: 100%;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  min-width: max-content;
 }
 
 .fret-row {
@@ -143,7 +141,6 @@ select { padding-right: 28px; appearance: none;
 }
 
 .fret-cell {
-  width: 52px;
   height: 44px;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -155,7 +152,7 @@ select { padding-right: 28px; appearance: none;
   transition: background 0.1s;
 }
 .fret-cell:hover { background: var(--bg3); }
-.fret-cell.fret-0 { border-right: 3px solid #aaa; width: 28px; }
+.fret-cell.fret-0 { border-right: 3px solid #aaa; }
 
 .fret-dot {
   width: 28px; height: 28px;
@@ -173,22 +170,127 @@ select { padding-right: 28px; appearance: none;
   display: flex;
 }
 .fret-number {
-  width: 52px;
   text-align: center;
   font-size: 10px;
   color: var(--muted);
   padding: 4px 0;
 }
-.fret-number.fret-0 { width: 28px; }
+.fret-number.fret-0 { }
 .fret-number-label { width: 36px; flex-shrink: 0; }
 
-.fret-marker {
+.fret-neck-dot-group {
   position: absolute;
-  bottom: 3px;
-  font-size: 8px;
-  color: var(--muted);
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
   pointer-events: none;
+  z-index: 10;
 }
+
+.fret-neck-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #606070;
+}
+
+#neck-chord-strip {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.chord-grid-heading {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.chord-grid {
+  display: grid;
+  gap: 3px;
+  min-width: max-content;
+}
+
+.cg-cell {
+  padding: 5px 6px;
+  text-align: center;
+  font-size: 11px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.cg-label {
+  color: var(--muted);
+  font-size: 10px;
+  text-align: right;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.cg-note-header {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--text);
+  text-align: center;
+  padding-bottom: 6px;
+}
+
+.cg-chord {
+  background: var(--bg2);
+  border: 1px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.1s, background 0.1s;
+}
+.cg-chord:hover { border-color: var(--border); color: var(--text); }
+
+.cg-chord.in-scale {
+  background: var(--accent-dim);
+  border-color: rgba(124,92,252,0.4);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.cg-chord.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+#chord-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 7px 12px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  font-size: 13px;
+}
+#chord-indicator.hidden { display: none; }
+
+.chord-indicator-clear {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 2px;
+  margin-left: auto;
+}
+.chord-indicator-clear:hover { color: var(--root-col); }
 
 .neck-legend {
   display: flex;
@@ -504,6 +606,46 @@ select { padding-right: 28px; appearance: none;
 }
 .modal label input { width: 100%; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ── Chord Finder tab ── */
+.cf-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: flex-end;
+}
+
+.cf-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.cf-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 8px 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cf-card:hover { border-color: var(--accent); }
+.cf-card.active { border-color: var(--accent); background: var(--accent-dim); }
+
+#cf-neck-wrap { width: 100%; }
+#cf-neck {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
