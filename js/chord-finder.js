@@ -311,7 +311,23 @@ const ChordsTab = (() => {
     });
   }
 
-  // ── Render all ────────────────────────────────────────────────────────────
+  function renderStepper() {
+    const label = document.getElementById('cf-pos-label');
+    const prev  = document.getElementById('cf-prev');
+    const next  = document.getElementById('cf-next');
+    if (!label) return;
+    label.textContent = voicings.length ? `${selectedIdx + 1} / ${voicings.length}` : '0 / 0';
+    prev.disabled = selectedIdx === 0;
+    next.disabled = selectedIdx >= voicings.length - 1;
+  }
+
+  function selectVoicing(idx) {
+    const strings = TUNINGS[currentTuning] || TUNINGS['drop-b'];
+    selectedIdx = idx;
+    document.querySelectorAll('.cf-card').forEach((c, j) => c.classList.toggle('active', j === idx));
+    renderVoicingNeck(voicings[idx] || null, strings, currentRoot);
+    renderStepper();
+  }
 
   function computeAndRender() {
     const strings    = TUNINGS[currentTuning] || TUNINGS['drop-b'];
@@ -323,6 +339,7 @@ const ChordsTab = (() => {
 
     renderCards(strings, chordNotes);
     renderVoicingNeck(voicings[selectedIdx] || null, strings, currentRoot);
+    renderStepper();
   }
 
   function renderCards(strings, chordNotes) {
@@ -347,13 +364,7 @@ const ChordsTab = (() => {
       card.innerHTML = buildSvgDiagram(v, strings, currentRoot, chordNotes);
       card.appendChild(label);
 
-      card.addEventListener('click', () => {
-        selectedIdx = i;
-        wrap.querySelectorAll('.cf-card').forEach((c, j) => {
-          c.classList.toggle('active', j === i);
-        });
-        renderVoicingNeck(v, strings, currentRoot);
-      });
+      card.addEventListener('click', () => selectVoicing(i));
 
       wrap.appendChild(card);
     });
@@ -401,6 +412,14 @@ const ChordsTab = (() => {
       currentTuning = tuningSel.value;
       syncToNeckTuning(tuningSel.value);
       computeAndRender();
+    });
+
+    document.getElementById('cf-prev').addEventListener('click', () => {
+      if (selectedIdx > 0) selectVoicing(selectedIdx - 1);
+    });
+
+    document.getElementById('cf-next').addEventListener('click', () => {
+      if (selectedIdx < voicings.length - 1) selectVoicing(selectedIdx + 1);
     });
 
     // Sync from Neck tab tuning

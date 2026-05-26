@@ -659,6 +659,21 @@ select { padding-right: 28px; appearance: none;
   overflow: hidden;
 }
 
+.cf-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+#cf-pos-label {
+  font-size: 13px;
+  color: var(--muted);
+  min-width: 52px;
+  text-align: center;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .lyrics-layout { flex-direction: column; }
