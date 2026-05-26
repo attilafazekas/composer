@@ -143,13 +143,22 @@ select { padding-right: 28px; appearance: none;
 .fret-cell {
   height: 44px;
   border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   position: relative;
   transition: background 0.1s;
+}
+.fret-cell::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--border);
+  pointer-events: none;
 }
 .fret-cell:hover { background: var(--bg3); }
 .fret-cell.fret-0 { border-right: 3px solid #aaa; }
